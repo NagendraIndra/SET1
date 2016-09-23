@@ -1,0 +1,110 @@
+Linux Crontab Format
+
+MIN HOUR DOM MON DOW CMD
+
+Field	Description		Allowed Value
+MIN		Minute field	0 to 59
+HOUR	Hour field		0 to 23
+DOM		Day of Month	1-31
+MON		Month field		1-12
+DOW		Day Of Week		0-6
+CMD		Command	Any command to be executed
+
+1) Specific time : Dec 1st 10:30 AM
+30 10 01 12 * /home/osboxes/master-bkp.sh or txt or just a command
+2) twice a day,every day - say we need it at 11am and 1 pm
+00 11,13 * * * /cmd or script
+3) Specific range -every day during work hours i.e from 9 AM to 6PM every hour 
+
+00 09-18 * * * cmd
+4) same as 3rd but only on weekdays, monday to friday
+00 09-18 * * 1-5 cmd
+
+
+5) How to see logged in user's crontab
+
+corntab -l
+
+for root user's -> su - root   , then issue above command
+for specific user , first loginto root then issue ->  crontab -u user1 -l
+
+6) How to edit crontab ? once edited use :wq
+crontab -e 
+
+7) how to schedule a command to run every minute? For every second is not possible.
+
+* * * * * cmd
+8) Every 5 minutes */5
+9) In the first 10mins, run for every 2 minutes..  0-10/2 
+same conversion for all fields.
+
+---------------------------------------
+Instead of specifying all 5 fields, we can use only one word that starts with @
+
+@yearly	0 0 1 1 *
+@daily	0 0 * * *
+@monthly 0 0 1 * *
+@hourly	0 * * * *
+@reboot	Run at startup.
+
+if i use   @monthly cmd/script  , this will run at 00:00 of everymonth 1st.
+
+----------------------------------------
+
+Instead of specifying full path of our shell script for every command, use PATH variable 
+
+path=/bin:/sbin:/usr/bin:/home/osboxes/YARN/hadoop2.7.2/
+
+@yearly yearly-script
+*/10 * * * * cmd_3every10min
+
+---------------------------------
+Load the crontab(create new cron) from a text file: Also removes old entries so be careful.
+
+>  crontab cron_entries123.txt
+--------------------------------
+Execute a job every 5 Seconds, we can only write a shell script that sleeps for 5sec
+$ cat every-5-seconds.sh
+#!/bin/bash
+while true
+do
+ /home/ramesh/backup.sh
+ sleep 5
+done
+-----------------------------------
+NOHUP - No Hang UP
+How to execute a command or a script IN BACKGROUND even after you logout from system??
+( if you submit the job using & , when you log out from the session your process will get killed)
+use NOHUP or make the script a batch job using AT,BATCH or Crontab, so that even after u logged out (e.g due to time out)
+
+syntax >>  nohup command-with-options &
+
+Nohup is very helpful when you have to execute a shell-script or command that take a long time to finish. 
+In that case, you don’t want to be connected to the shell and waiting for the command to complete. 
+Instead, execute it with nohup, exit the shell and continue with your other work.
+
+OUTPUT of NOHUP (log)
+by default the messages from the command you have executed with nohup, standard output will be redirected to nohup.out . nohup.out contains both standard o/p and standard error o/p.
+
+you can redirect it to some other file instead of standard nohup.out
+
+----------------------------
+How to print lines in both stdout and stdin?
+sample.sh 
+while(true)
+do
+echo "standard output"
+echo "standard error" 1>&2 
+sleep 1;
+done
+
+nonup sh sample.sh &
+
+it will send the messages to nohup.out , see the o/p tail -f hohup.out
+
+$ nohup sh custom-script.sh > custom-out.log &
+
+If you log-out of the shell and login again, you’ll still see the custom-script.sh running in the background.
+
+$ ps aux | grep osboxes
+osboxes  12034  0.0  0.1   4912  1080 pts/2    S    14:10   0:00 sh sample.sh

@@ -1,0 +1,11 @@
+git clone
+git add *
+git commit -m "message"
+git remote -v    displays the remotes
+
+git config --global --edit shows you configuration file.
+
+Changing the repository:
+git remote set-url origin https://github.com/your User ID/repository name.git
+
+git push origin master
