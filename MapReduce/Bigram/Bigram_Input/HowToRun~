@@ -1,0 +1,7 @@
+For Reduce side join
+
+file:////home/hadoop/YARNBOX/input/Joins/emp file:///home/hadoop/YARNBOX/input/Joins/dept file:///home/hadoop/YARNBOX/input/Joins/output
+
+
+For Map Side Join
+
