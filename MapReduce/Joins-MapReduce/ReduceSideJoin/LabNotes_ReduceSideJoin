@@ -1,0 +1,47 @@
+These reduce side joins are more common.
+We see how to join the files used in MapSideJoins.
+
+We can join two large data sets using reduce side joins.
+
+The main idea is that we make sure that the joining keys are available to the reudcers.
+
+The MR shuffle and sort does this.
+
+For this, we need a custom writable(custom writable) to club the joining key of both data sets.
+
+
+Here we reuse the BigramTextPair
+
+to process EmpInfo, one mapper
+to process Dept details another mapper
+
+and the keys are compared in Reducer.
+ -----------------------------------------
+ 
+ hadoop jar ReduceSideJoin.jar  /user/Joins/Input/EmpInfo.txt /user/Joins/Input/Dept.txt /user/ReduceJoins/Output1/
+ 
+ 
+ error means
+ WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+ 
+ job.waitForCompletion is not entered.
+ 
+
+The below 2 steps are mandatory, else gives error.
+
+job.setMapOutputKeyClass(Text.class);
+job.setMapOutputValueClass(BigramTextPair.class);
+		
+ 
+ 
+EMPNO_EMPNAME_SALARY_DEPTID	DEPTID_DEPTNAME
+7	jim	2000	01	Finance
+6	DBA	2000	01	Finance
+1	Ali	2000	01	Finance
+8	DBA	2000	02	HR
+2	Bob	4000	02	HR
+9	jim	2000	03	Travel
+4	Tim	7000	03	Travel
+5	Raj	8000	04	Admin
+3	Joy	5000	05	HouseKeeping
+
